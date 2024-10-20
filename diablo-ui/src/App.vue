@@ -1,47 +1,37 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <el-container style="height: 100vh;">
+    <el-header>
+      <HeaderComponent />
+    </el-header>
+    <el-container>
+      <el-aside width="200px">
+        <Navigation />
+      </el-aside>
+      <el-main>
+        <router-view />
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script lang="ts">
+import { defineComponent } from 'vue';
+import HeaderComponent from '@/components/Header.vue';
+import Navigation from '@/components/Navigation.vue';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+export default defineComponent({
+  name: 'App',
+  components: {
+    HeaderComponent,
+    Navigation,
+  },
+});
+</script>
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+<style>
+body, html, #app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 </style>
