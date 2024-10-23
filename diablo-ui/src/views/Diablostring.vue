@@ -106,9 +106,6 @@ const options = [
   { label: 'vo', value: 'vo' }
 ];
 
-
-
-
 export default defineComponent({
   name: 'Diablostring',
   components: { DiabloEdit }, // 注册 DiabloEdit 组件
@@ -137,7 +134,13 @@ export default defineComponent({
       zhTW: '',
     });
 
-    const allData = ref<Uniqueitem[]>([]); // 初始空的数组，待后端数据填充
+    const allData = ref<Uniqueitem[]>([{
+      id: 0,
+      type: '',
+      key: '',
+      enUS: '',
+      zhTW: '',
+    }]); // 初始空的数组，待后端数据填充
     
 
     // 获取数据并更新totalItems
@@ -182,8 +185,16 @@ export default defineComponent({
 
     const addJson = () => {
       dialogVisible.value = true;
+      clearEditItem()
     };
 
+    const clearEditItem = () => {
+      editItem.id = 0;
+      editItem.enUS = '';
+      editItem.zhTW = '';
+      editItem.key = '';
+      editItem.type = '';
+    };
 
 
     const diablo_clear = () => {
@@ -191,6 +202,12 @@ export default defineComponent({
     };
 
     const handleEdit = (item: Uniqueitem) => {
+      console.log('handleEdit', item);
+      editItem.id = item.id;
+      editItem.enUS = item.enUS;
+      editItem.zhTW = item.zhTW;
+      editItem.key = item.key;
+      editItem.type = item.type;
       dialogVisible.value = true; // 确保设置为 true
 
     };
