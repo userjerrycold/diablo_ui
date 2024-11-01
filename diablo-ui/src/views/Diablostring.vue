@@ -9,8 +9,11 @@
         </el-col>
         <el-col :span="6">
           <el-button @click="addJson" type="primary">新增</el-button>
-        </el-col>
+          &nbsp;
+          <el-button @click="exportTxt" type="primary">导出</el-button>
 
+        </el-col>
+        
       </el-row>
     </el-header>
 
@@ -19,7 +22,8 @@
         <el-col :span="12">
           <el-form :inline="true" :model="filters">
             <el-form-item label="文本名称">
-              <el-select v-model="filters.textName" placeholder="请选择" style="width: 300px;">
+              <el-select v-model="filters.textName" @change="handleFilterChange" placeholder="请选择"
+                style="width: 200px;">
                 <!-- 动态渲染下拉选项 -->
                 <el-option v-for="option in options" :key="option.value" :label="option.label"
                   :value="option.value"></el-option>
@@ -47,18 +51,13 @@
         </el-table-column>
       </el-table>
 
-      <el-pagination
-        @current-change="handlePageChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="totalItems"
-        layout="prev, pager, next"
-        style="margin-top: 20px; text-align: center;">
+      <el-pagination @current-change="handlePageChange" :current-page="currentPage" :page-size="pageSize"
+        :total="totalItems" layout="prev, pager, next" style="margin-top: 20px; text-align: center;">
       </el-pagination>
 
       <!-- 编辑弹框 -->
       <el-dialog :title="diabloTitle" v-model="dialogVisible" :modal-append-to-body="true" :lock-scroll="true"
-        :close-on-click-modal="false" width="80%" height="100%" @close="diablo_clear" @before-close="diablo_clear">
+        :close-on-click-modal="false" width="55%" height="100%" @close="diablo_clear" @before-close="diablo_clear">
         <!-- DiabloEdit 组件 -->
         <DiabloEdit v-if="dialogVisible" :paramValue="editItem.key" :editItem="editItem" />
       </el-dialog>
@@ -68,9 +67,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, computed,onMounted } from 'vue';
-import { ElMessage } from 'element-plus';
-import { apiQuery } from '@/api/interface_plug';
+import { defineComponent, ref, reactive, computed, onMounted } from 'vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { apiQuery, del, exportData } from '@/api/interface_plug';
 import DiabloEdit from './DiabloEdit.vue'; // 导入自定义的 DiabloEdit 组件
 
 interface Uniqueitem {
@@ -108,7 +107,7 @@ const options = [
 
 export default defineComponent({
   name: 'Diablostring',
-  components: { DiabloEdit }, // 注册 DiabloEdit 组件
+  components: { DiabloEdit}, // 注册 DiabloEdit 组件
   setup() {
 
     onMounted(() => {
@@ -141,7 +140,7 @@ export default defineComponent({
       enUS: '',
       zhTW: '',
     }]); // 初始空的数组，待后端数据填充
-    
+
 
     // 获取数据并更新totalItems
     const fetchData = async () => {
@@ -160,6 +159,47 @@ export default defineComponent({
         console.error('Error fetching data:', error);
       }
     };
+
+    const exportTxt = () => {
+      if(filters.textName == 'all'){
+        ElMessage.error('请选择一个类型进行导出');
+        return;
+      }
+      ElMessageBox.confirm(
+        '确定需要导出此类型的文本吗？',
+        '确认导出',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          exportData(filters.textName).then((res) => {
+            console.log(res)
+            if(res.code == 0){
+              ElMessage({
+                type: 'success',
+                message: '导出成功',
+              });
+            }else{
+              ElMessage({
+                type: 'error',
+                message: '导出失败',
+              });
+            }
+          }).catch(() => {
+            ElMessage({
+                type: 'error',
+                message: '导出失败',
+              });
+          });
+        })
+        .catch(() => {
+          // 如果点击了“取消”，则不做任何操作
+          ElMessage.info('已取消导出');
+        });
+    }
 
     // 分页变更时调用查询
     const handlePageChange = (page: number) => {
@@ -182,6 +222,11 @@ export default defineComponent({
       currentPage.value = 1;
       fetchData();  // 在搜索时触发数据刷新
     };
+
+    const handleFilterChange = (value: string) => {
+      filters.textName = value;
+      fetchData();
+    }
 
     const addJson = () => {
       dialogVisible.value = true;
@@ -213,8 +258,43 @@ export default defineComponent({
     };
 
     const handleDelete = (item: Uniqueitem) => {
-      allData.value = allData.value.filter((i) => i.id !== item.id);
-      ElMessage.success('删除成功');
+      ElMessageBox.confirm(
+        '确定要删除此条记录吗？',
+        '确认删除',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          //del
+          del(item.id).then((res) => {
+            console.log(res)
+            if(res.code == 0){
+              ElMessage({
+                type: 'success',
+                message: '删除成功',
+              });
+              // 如果点击了“确定”，则执行删除操作
+              allData.value = allData.value.filter((i) => i.id !== item.id);
+            }else{
+              ElMessage({
+                type: 'error',
+                message: '删除失败',
+              });
+            }
+          }).catch(() => {
+            ElMessage({
+                type: 'error',
+                message: '删除失败',
+              });
+          });
+        })
+        .catch(() => {
+          // 如果点击了“取消”，则不做任何操作
+          ElMessage.info('已取消删除');
+        });
     };
 
     const handleSave = () => {
@@ -246,6 +326,8 @@ export default defineComponent({
       handleEdit,
       handleDelete,
       handleSave,
+      handleFilterChange,
+      exportTxt,
       dialogVisible,
       diabloTitle,
       editItem,

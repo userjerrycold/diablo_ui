@@ -1,5 +1,5 @@
 
-import axios from '@/api/axios'
+import axios from './index';
 
 // 定义查询参数的接口
 interface QueryParams {
@@ -25,53 +25,10 @@ interface Uniqueitem {
 }
 
 
-export function queryDiabloEdit(paramValue: string) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // 模拟的返回数据
-        const mockData = {
-          code: 200,
-          data: {
-            key: paramValue,
-            enus: `English Name for ${paramValue}`,
-            zhtw: `中文名称 for ${paramValue}`,
-          },
-          message: '查询成功'
-        };
-        resolve({ data: mockData });
-      }, 500); // 模拟网络延迟
-    });
-  }
-  
-  export function updateDiabloEdit(editItem: { key: string; enus: string; zhtw: string }) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // 模拟保存成功
-        const mockResponse = {
-          code: 200,
-          message: '保存成功',
-        };
-        resolve({ data: mockResponse });
-      }, 500); // 模拟网络延迟
-    });
-  }
-  
-  export function sync() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // 模拟同步成功
-        const mockSyncResponse = {
-          code: 200,
-          message: '同步成功',
-        };
-        resolve({ data: mockSyncResponse });
-      }, 300); // 模拟同步延迟
-    });
-  }
-
   // API 查询方法封装
 export const apiQuery = async (params: QueryParams): Promise<ApiResponse<Uniqueitem>> => {
   try {
+    console.log("apiQuery params: ", params)
     const response = await axios.get('http://localhost:8095/quest/diablo/search', {
       params: {
         keyword: params.keyword,
@@ -80,12 +37,91 @@ export const apiQuery = async (params: QueryParams): Promise<ApiResponse<Uniquei
         pageSize: params.pageSize
       }
     });
+    console.log(response.data);
     return {
-      items: response.data.content,
-      total: response.data.totalElements
+      items: response.data.data.content,
+      total: response.data.data.totalElements
     };
   } catch (error) {
     console.error('Error fetching data:', error);
+    throw error;
+  }
+}
+
+/**
+ * save
+ */
+export async function save(params: any) {
+  try {
+    console.log("save params: ", params)
+    const response = await axios.post('http://localhost:8095/quest/diablo/save', params);
+    console.log('response : ',response)
+    return {
+      code : response.data.code,
+      message : response.data.message
+    }
+  } catch (error) {
+    console.error('Error save data:', error);
+    throw error;
+  }
+}
+
+/**
+ * delete
+ * http://localhost:8095/quest/diablo/delete/{id}
+ */
+export async function del(id: number) {
+  try {
+    console.log("del id: ", id)
+    const response = await axios.delete(`http://localhost:8095/quest/diablo/delete/${id}`);
+    return {
+      code : response.data.code,
+      message : response.data.message
+    }
+  } catch (error) {
+    console.error('Error del data:', error);
+    throw error;
+  }
+}
+
+
+/**
+ * export
+ * param: type: string
+ */
+export async function exportData(type: string) {
+  try {
+    console.log("exportData type: ", type);
+    
+    // 使用 blob 类型来处理文件下载
+    const response = await axios.get(`http://localhost:8095/quest/diablo/export?type=${type}`, {
+      responseType: 'blob' // 设置响应类型为 blob
+    });
+
+    // 创建一个下载链接
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    
+    // 创建一个临时的 <a> 元素并触发下载
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${type}.json`); // 设置下载文件名
+
+    // 触发下载
+    document.body.appendChild(link);
+    link.click();
+
+    // 清理
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url); // 释放内存
+
+    console.log('File exported successfully.');
+
+    return {
+      code: 0,
+      message: 'Export successful.'
+    };
+  } catch (error) {
+    console.error('Error exporting data:', error);
     throw error;
   }
 }
