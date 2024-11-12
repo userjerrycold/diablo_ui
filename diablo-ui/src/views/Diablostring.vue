@@ -343,9 +343,10 @@ export default defineComponent({
 
 
 <style scoped>
-.el-header {
-  padding: 10px;
-
+.el-container {
+  position: fixed;
+  width: 80%;
+  height: 80%;
 }
 
 .el-select {

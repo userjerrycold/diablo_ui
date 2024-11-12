@@ -1,8 +1,5 @@
 <template>
   <el-container style="height: 100vh;">
-    <el-header>
-      <HeaderComponent />
-    </el-header>
     <el-container>
       <el-aside width="200px">
         <Navigation />
@@ -16,13 +13,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import HeaderComponent from '@/components/Header.vue';
 import Navigation from '@/components/Navigation.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
-    HeaderComponent,
     Navigation,
   },
 });
