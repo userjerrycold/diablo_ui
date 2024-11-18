@@ -25,6 +25,78 @@ interface Uniqueitem {
 }
 
 
+
+interface QueryParamX {
+  keyword: string;
+  page: number;
+  pageSize: number;
+}
+
+interface UniqueItemX {
+  xId: number;                     // 唯一标识符
+  index: string;                   // 英文名称
+  indexZh: string;                 // 中文名称
+  enabledStr: string;              // 状态字符串（例如“生效中”）
+  rarity: string;                  // 稀有度
+  lvl: number;                     // 等级
+  lvlReq: number;                  // 等级要求
+  codeStr: string;                 // 物品类型字符串
+  enabled: number;                 // 是否启用（0 或 1）
+  version: number;                 // 版本号
+  firstladderseason: string;       // 第一个天梯赛季
+  lastladderseason: string;        // 最后一个天梯赛季
+  nolimit: string;                 // 是否无限制
+  code: string;                    // 物品代码
+  itemName: string;                // 物品名称
+  carry1: string;                  // 是否只能携带一个
+  costMult: number;                // 成本倍率
+  costAdd: number;                 // 额外成本
+  chrTransform: string;            // 角色转换外观代码
+  invTransform: string;            // 背包图标转换代码
+  flippyFile: string;              // 物品掉落图标文件
+  invfile: string;                 // 背包图标文件
+  dropsound: string;               // 掉落声音
+  dropsfxframe: string;            // 掉落音效帧
+  usesound: string;                // 使用声音
+  prop1: string;                   // 属性 1 标识
+  par1: string;                    // 属性 1 参数
+  min1: number;                    // 属性 1 最小值
+  max1: number;                    // 属性 1 最大值
+  prop2: string;                   // 属性 2 标识
+  par2: string;                    // 属性 2 参数
+  min2: number;                    // 属性 2 最小值
+  max2: number;                    // 属性 2 最大值
+  prop3: string;                   // 属性 3 标识
+  par3: string;                    // 属性 3 参数
+  min3: number;                    // 属性 3 最小值
+  max3: number;                    // 属性 3 最大值
+  prop4: string;                   // 属性 4 标识
+  par4: string;                    // 属性 4 参数
+  min4: number;                    // 属性 4 最小值
+  max4: number;                    // 属性 4 最大值
+  prop5: string;                   // 属性 5 标识
+  par5: string;                    // 属性 5 参数
+  min5: number;                    // 属性 5 最小值
+  max5: number;                    // 属性 5 最大值
+  prop1Str: string;                // 属性 1 描述
+  prop2Str: string;                // 属性 2 描述
+  prop3Str: string;                // 属性 3 描述
+  prop4Str: string;                // 属性 4 描述
+  prop5Str: string;                // 属性 5 描述
+  prop6Str: string;               // 属性 6 描述（可选）
+  prop7Str: string;               // 属性 7 描述（可选）
+  prop8Str: string;               // 属性 8 描述（可选）
+  prop9Str: string;               // 属性 9 描述（可选）
+  prop10Str: string;              // 属性 10 描述（可选）
+  prop11Str: string;              // 属性 11 描述（可选）
+  prop12Str: string;              // 属性 12 描述（可选）
+}
+
+
+
+
+
+
   // API 查询方法封装
 export const apiQuery = async (params: QueryParams): Promise<ApiResponse<Uniqueitem>> => {
   try {
@@ -47,6 +119,32 @@ export const apiQuery = async (params: QueryParams): Promise<ApiResponse<Uniquei
     throw error;
   }
 }
+
+
+
+export const apiUniqueQuery = async (params: QueryParamX): Promise<ApiResponse<UniqueItemX>> => {
+  try {
+    console.log("apiUniqueQuery params: ", params);
+    const response = await axios.get('http://localhost:8095/quest/diablo/unique/search', {
+      params: {
+        keyword: params.keyword,
+        page: params.page,
+        pageSize: params.pageSize
+      }
+    });
+    console.log("apiUniqueQuery response data: ", response.data);
+    return {
+      items: response.data.data.content,
+      total: response.data.data.totalElements
+    };
+  } catch (error) {
+    console.error('Error fetching unique items:', error);
+    throw error;
+  }
+};
+
+
+
 
 /**
  * save
@@ -125,3 +223,4 @@ export async function exportData(type: string) {
     throw error;
   }
 }
+

@@ -14,6 +14,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Diablostring',
     component: () => import('@/views/Diablostring.vue'),
   },
+  {
+    path: '/unique',
+    name: 'UniqueItem',
+    component: () => import('@/views/UniqueItem.vue'),
+  },
 ];
 
 const router = createRouter({
