@@ -38,7 +38,7 @@
             </el-pagination>
 
             <!-- 详情弹窗 -->
-            <el-dialog  width="40%" :modal="false" style="background-color: rgba(0, 0, 0, 0.80); "   v-model="detailDialogVisible" >
+            <el-dialog  width="40%" :modal="false" style="background-color: rgba(3, 3, 3, 0.9); "   v-model="detailDialogVisible" >
                 <UniqueItemDetail :item="selectedItem" />
             </el-dialog>
 
@@ -320,10 +320,11 @@ export default defineComponent({
                     pageSize: pageSize.value
                 });
                 console.log('Response:', response);
-                uniqueItems.value = response.items; // 当前页的数据
-                totalItems.value = response.total; // 设置总条数以用于分页
+                uniqueItems.value = response.items || [];
+                totalItems.value = response.total || 0;
             }catch (error) {
-                console.error('Error:', error);
+                console.error('Error fetching data:', error);
+                ElMessage.error('获取数据失败');
             }
             
         };
@@ -414,5 +415,13 @@ export default defineComponent({
 
 .el-select {
     width: 300px;
+}
+
+/* 表格列的动态宽度调整 */
+.el-table th,
+.el-table td {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

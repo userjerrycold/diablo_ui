@@ -1,19 +1,17 @@
 <template>
-  <el-container style="height: 100vh;">
+  <el-container style="height: 100vh; width: 100%;">
     <el-header>
       <el-row :gutter="20">
         <el-col :span="6">
           <el-input v-model="searchKeyword" placeholder="请输入关键字搜索" clearable @keyup.enter.native="handleSearch"
-            style="width: 300px;">
+            style="width: 100%;">
           </el-input>
         </el-col>
         <el-col :span="6">
           <el-button @click="addJson" type="primary">新增</el-button>
           &nbsp;
           <el-button @click="exportTxt" type="primary">导出</el-button>
-
         </el-col>
-        
       </el-row>
     </el-header>
 
@@ -24,7 +22,6 @@
             <el-form-item label="文本名称">
               <el-select v-model="filters.textName" @change="handleFilterChange" placeholder="请选择"
                 style="width: 200px;">
-                <!-- 动态渲染下拉选项 -->
                 <el-option v-for="option in options" :key="option.value" :label="option.label"
                   :value="option.value"></el-option>
               </el-select>
@@ -33,12 +30,12 @@
         </el-col>
       </el-row>
 
-      <el-table :data="paginatedData" style="width: 100%" stripe>
+      <el-table :data="paginatedData" style="width: 100%;" stripe>
         <el-table-column prop="id" label="序号" width="80"></el-table-column>
         <el-table-column prop="type" label="文本名称" width="150"></el-table-column>
         <el-table-column prop="key" label="编码" width="250"></el-table-column>
-        <el-table-column prop="enUS" label="英文名称" width="400"></el-table-column>
-        <el-table-column prop="zhTW" label="中文名称" width="500"></el-table-column>
+        <el-table-column prop="enUS" label="英文名称"></el-table-column>
+        <el-table-column prop="zhTW" label="中文名称"></el-table-column>
         <el-table-column label="操作" width="140" fixed="right">
           <template #default="scope">
             <el-button type="primary" size="small" @click="handleEdit(scope.row)">
@@ -55,16 +52,14 @@
         :total="totalItems" layout="prev, pager, next" style="margin-top: 20px; text-align: center;">
       </el-pagination>
 
-      <!-- 编辑弹框 -->
       <el-dialog :title="diabloTitle" v-model="dialogVisible" :modal-append-to-body="true" :lock-scroll="true"
-        :close-on-click-modal="false" width="55%" height="100%" @close="diablo_clear" @before-close="diablo_clear">
-        <!-- DiabloEdit 组件 -->
+        :close-on-click-modal="false" width="55%" @close="diablo_clear" @before-close="diablo_clear">
         <DiabloEdit v-if="dialogVisible" :paramValue="editItem.key" :editItem="editItem" />
       </el-dialog>
-
     </el-main>
   </el-container>
 </template>
+
 
 <script lang="ts">
 import { defineComponent, ref, reactive, computed, onMounted } from 'vue';
@@ -343,13 +338,46 @@ export default defineComponent({
 
 
 <style scoped>
+/* 让容器占据全屏幕 */
 .el-container {
-  position: fixed;
-  width: 80%;
-  height: 80%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
+.el-header {
+  padding: 10px;
+  background-color: #f5f5f5;
+}
+
+.el-main {
+  flex: 1;
+  padding: 10px;
+  overflow: auto;
+}
+
+.el-row {
+  width: 100%;
+}
+
+.el-input,
 .el-select {
-  width: 300px;
+  width: 100%;
+}
+
+/* 表格列的动态宽度调整 */
+.el-table th,
+.el-table td {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* 弹窗样式 */
+.el-dialog {
+  max-height: 90%;
+  overflow-y: auto;
 }
 </style>
+

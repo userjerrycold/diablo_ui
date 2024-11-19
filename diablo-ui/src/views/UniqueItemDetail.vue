@@ -52,8 +52,8 @@ export default {
 }
 
 .item-name {
-  color: #FFD700; /* 改为亮金色，提升对比度 */
-  font-size: 26px; /* 稍微增大字体 */
+  color: #c5b176; /* 改为亮金色，提升对比度 */
+  font-size: 28px; /* 稍微增大字体 */
   font-family: "KaiTi", serif;
   margin-bottom: 12px;
   font-weight: bold; /* 加粗文字 */
@@ -67,14 +67,14 @@ export default {
 
 .item-level-req {
   color: #FFFFFF; /* 白色，适合暗色背景 */
-  font-size: 22px; /* 字体稍大 */
+  font-size: 24px; /* 字体稍大 */
   font-family: "KaiTi", serif;
   margin-bottom: 12px;
 }
 
 .item-property {
-  color: #87CEFA; /* 亮蓝色，提升对比度 */
-  font-size: 22px; /* 字体稍大 */
+  color: #7272ff; /* 亮蓝色，提升对比度 */
+  font-size: 24px; /* 字体稍大 */
   font-family: "KaiTi", serif;
   font-weight: bold; /* 加粗文字 */
 }
