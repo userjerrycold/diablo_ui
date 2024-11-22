@@ -46,15 +46,22 @@ export default {
 }
 </script>
   
-  <style scoped>
-  .unique-item-detail {
+<style scoped>
+@font-face {
+  font-family: "BlizzardGlobal";
+  src: url("../assets/fonts/blizzardglobal-v5_81.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.unique-item-detail {
   text-align: center; /* 全局居中 */
 }
 
 .item-name {
   color: #c5b176; /* 改为亮金色，提升对比度 */
   font-size: 28px; /* 稍微增大字体 */
-  font-family: "KaiTi", serif;
+  font-family: "BlizzardGlobal", serif; /* 使用自定义字体 */
   margin-bottom: 12px;
   font-weight: bold; /* 加粗文字 */
 }
@@ -62,20 +69,19 @@ export default {
 .item-en-name {
   color: #D3D3D3; /* 浅灰色，亮度适中 */
   font-size: 22px; /* 字体增大 */
-  font-family: "Arial", serif;
+  font-family: "BlizzardGlobal", serif; /* 使用自定义字体 */
 }
 
 .item-level-req {
   color: #FFFFFF; /* 白色，适合暗色背景 */
   font-size: 24px; /* 字体稍大 */
-  font-family: "KaiTi", serif;
+  font-family: "BlizzardGlobal", serif; /* 使用自定义字体 */
   margin-bottom: 12px;
 }
 
 .item-property {
   color: #7272ff; /* 亮蓝色，提升对比度 */
   font-size: 24px; /* 字体稍大 */
-  font-family: "KaiTi", serif;
-  font-weight: bold; /* 加粗文字 */
+  font-family: "BlizzardGlobal", serif; /* 使用自定义字体 */
 }
-  </style>
+</style>
