@@ -92,6 +92,51 @@ interface UniqueItemX {
   prop12Str: string;              // 属性 12 描述（可选）
 }
 
+// 定义查询参数类型
+interface SkillQueryParams {
+  keyword?: string; // 可选查询关键字
+  player: string;   // 职业，必填
+  isTable: string;  // 表类型，必填
+  page: number;     // 当前页
+  pageSize: number; // 每页大小
+}
+
+
+// 定义返回的技能数据类型
+interface SkillNameMapping {
+  id: number;
+  enUs: string;
+  skillNo: number;
+  player: string;
+  skillName: string;
+  skillInfo: string;
+}
+
+// API 查询方法
+export const apiQuerySkill = async (
+  params: SkillQueryParams
+): Promise<ApiResponse<SkillNameMapping>> => {
+  try {
+    console.log("apiQuerySkill params: ", params);
+    const response = await axios.get('http://localhost:8095/quest/diablo/search/skill', {
+      params: {
+        keyword: params.keyword,
+        player: params.player,
+        isTable: params.isTable,
+        page: params.page,
+        pageSize: params.pageSize,
+      },
+    });
+    console.log("API Response: ", response.data);
+    return {
+      items: response.data.data.content,
+      total: response.data.data.totalElements,
+    };
+  } catch (error) {
+    console.error("Error fetching skill data:", error);
+    throw error;
+  }
+};
 
 
 
@@ -119,6 +164,10 @@ export const apiQuery = async (params: QueryParams): Promise<ApiResponse<Uniquei
     throw error;
   }
 }
+
+
+
+
 
 
 

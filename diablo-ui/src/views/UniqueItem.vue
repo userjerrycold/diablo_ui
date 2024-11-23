@@ -38,7 +38,7 @@
             </el-pagination>
 
             <!-- 详情弹窗 -->
-            <el-dialog  width="40%" :modal="false" style="background-color: rgba(3, 3, 3, 0.9); "   v-model="detailDialogVisible" >
+            <el-dialog  width="40%" :modal="false" style="background-color: rgba(3, 3, 3, 0.9); "    v-model="detailDialogVisible" >
                 <UniqueItemDetail :item="selectedItem" />
             </el-dialog>
 

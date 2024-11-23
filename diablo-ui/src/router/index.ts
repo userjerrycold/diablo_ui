@@ -19,6 +19,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'UniqueItem',
     component: () => import('@/views/UniqueItem.vue'),
   },
+  {
+    path: '/skill',
+    name: 'SkillName',
+    component: () => import('@/views/SkillName.vue'),
+  },
 ];
 
 const router = createRouter({
