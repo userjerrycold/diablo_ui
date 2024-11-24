@@ -24,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'SkillName',
     component: () => import('@/views/SkillName.vue'),
   },
+  {
+    path: '/properties',
+    name: 'Properties',
+    component: () => import('@/views/Properties.vue'),
+  },
 ];
 
 const router = createRouter({
