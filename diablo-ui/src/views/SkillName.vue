@@ -4,10 +4,10 @@
     <el-card class="search-panel" shadow="hover">
       <el-form :model="searchForm" inline>
         <el-form-item label="关键字">
-          <el-input v-model="searchForm.keyword" placeholder="请输入技能关键字" clearable />
+          <el-input v-model="searchForm.keyword" placeholder="请输入技能关键字"  />
         </el-form-item>
         <el-form-item label="职业">
-          <el-select v-model="searchForm.player" placeholder="请选择职业" clearable>
+          <el-select v-model="searchForm.player" placeholder="请选择职业"  style="width: 150px">
             <el-option label="全部" value="all"></el-option>
             <el-option label="亚马逊" value="ama"></el-option>
             <el-option label="死灵法师" value="nec"></el-option>
@@ -19,9 +19,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="表类型">
-          <el-select v-model="searchForm.isTable" placeholder="请选择表类型" clearable>
-            <el-option label="技能名映射" value="true"></el-option>
-            <el-option label="技能表映射" value="false"></el-option>
+          <el-select v-model="searchForm.isTable" placeholder="请选择表类型"  style="width: 150px">
+            <el-option label="所有技能" value="false"></el-option>
+            <el-option label="单系技能" value="true"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -46,7 +46,7 @@
         layout="prev, pager, next, jumper"
         :page-size="searchForm.pageSize"
         :total="skillData.total"
-        :current-page="searchForm.page + 1"
+        :current-page="searchForm.page"
         @current-change="handlePageChange"
       />
     </el-card>
@@ -54,12 +54,18 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import {ref, defineComponent, onMounted} from "vue";
 import { apiQuerySkill, SkillQueryParams, SkillRecord } from "@/api/interface_plug";
 
 export default defineComponent({
   name: "SkillName",
   setup() {
+
+    onMounted(() => {
+      fetchSkills(); // 页面加载时自动调用查询函数
+    });
+
+
     // 搜索表单类型定义
     interface SearchForm {
       keyword: string;
@@ -79,8 +85,8 @@ export default defineComponent({
     const searchForm = ref<SearchForm>({
       keyword: "",
       player: "all",
-      isTable: "true",
-      page: 0,
+      isTable: "false",
+      page: 1,
       pageSize: 10,
     });
 
@@ -106,8 +112,8 @@ export default defineComponent({
       searchForm.value = {
         keyword: "",
         player: "all",
-        isTable: "true",
-        page: 0,
+        isTable: "false",
+        page: 1,
         pageSize: 10,
       };
       fetchSkills();
@@ -115,7 +121,7 @@ export default defineComponent({
 
     // 页码切换
     const handlePageChange = (page: number) => {
-      searchForm.value.page = page - 1; // 后端分页从 0 开始
+      searchForm.value.page = page; // 后端分页从 0 开始
       fetchSkills();
     };
 
@@ -126,6 +132,8 @@ export default defineComponent({
       resetSearchForm,
       handlePageChange,
     };
+
+
   },
 });
 </script>

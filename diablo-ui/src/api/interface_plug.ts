@@ -1,4 +1,3 @@
-
 import axios from './index';
 
 // 定义查询参数的接口
@@ -166,11 +165,6 @@ export const apiQuery = async (params: QueryParams): Promise<ApiResponse<Uniquei
 }
 
 
-
-
-
-
-
 export const apiUniqueQuery = async (params: QueryParamX): Promise<ApiResponse<UniqueItemX>> => {
   try {
     console.log("apiUniqueQuery params: ", params);
@@ -271,5 +265,7 @@ export async function exportData(type: string) {
     console.error('Error exporting data:', error);
     throw error;
   }
+
+
 }
 
