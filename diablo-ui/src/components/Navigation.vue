@@ -6,10 +6,13 @@
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b"
+    center
   >
+    <el-menu-item index="/">首页</el-menu-item>
+
     <el-sub-menu index="1">
       <template #title>
-        <span>暗黑知识库</span>
+        <span>暗黑资料</span>
       </template>
       <el-menu-item index="/diablostring">暗黑文本</el-menu-item>
       <el-menu-item index="/unique">暗金装备</el-menu-item>

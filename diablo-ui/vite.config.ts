@@ -12,5 +12,14 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+  server: {
+    proxy: {
+      '/quest': {
+        target: 'http://localhost:8095', // 后端服务地址
+        changeOrigin: true, // 修改请求的 origin
+        rewrite: (path) => path.replace(/^\/quest/, '/quest'), // 路径重写
+      },
+    },
+  },
 })
