@@ -38,25 +38,45 @@
             </el-pagination>
 
             <!-- 详情弹窗 -->
-            <el-dialog  width="40%" :modal="false" style="background-color: rgba(3, 3, 3, 0.9); "    v-model="detailDialogVisible" >
+            <el-dialog
+                title=""
+                width="50%"
+                :modal="true"
+                v-model="detailDialogVisible"
+                :append-to-body="true"
+                style="background-color: rgba(3, 3, 3, 0.9); "
+                >
                 <UniqueItemDetail :item="selectedItem" />
             </el-dialog>
 
             <!-- 编辑弹窗 -->
-            <el-dialog :title="editTitle" v-model="editDialogVisible" width="50%">
+            <el-dialog
+                :title="editTitle"
+                :modal="true"
+                v-model="editDialogVisible"
+                :style="{
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    borderRadius: '10px',
+                    boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)',
+                }"
+                :append-to-body="true"
+                width="60%"
+            >
                 <UniqueItemEdit :item="selectedItem" @save="saveItem" />
             </el-dialog>
+
+            <!-- 弹窗 背景模糊化 -->
+            <div v-if="editDialogVisible || detailDialogVisible" class="blur-background"></div>
         </el-main>
     </el-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive ,onMounted} from 'vue';
+import { defineComponent, ref, reactive, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import UniqueItemDetail from './UniqueItemDetail.vue';
 import UniqueItemEdit from './UniqueItemEdit.vue';
 import { apiUniqueQuery } from '@/api/interface_plug';
-
 
 export default defineComponent({
     name: 'UniqueItem',
@@ -64,274 +84,38 @@ export default defineComponent({
         UniqueItemDetail,
         UniqueItemEdit,
     },
-
-    
     setup() {
-
         const searchKeyword = ref('');
         const currentPage = ref(1);
         const pageSize = ref(10);
         const totalItems = ref(0);
-
-        const xuniqueItem = reactive({
-            xId: 1,
-                index: 'Deathspade',
-                indexZh: '死亡之鏟',
-                enabledStr: '生效中',
-                rarity: '1',
-                lvl: 12,
-                lvlReq: 9,
-                codeStr: '斧',
-                enabled: 1,
-                version: 0,
-                firstladderseason: '',
-                lastladderseason: '',
-                nolimit: '',
-                code: 'axe',
-                itemName: 'Axe',
-                carry1: '',
-                costMult: 5,
-                costAdd: 5000,
-                chrTransform: 'dgld',
-                invTransform: '',
-                flippyFile: '',
-                invfile: 'invaxeu',
-                dropsound: '',
-                dropsfxframe: '',
-                usesound: '',
-                prop1: 'stupidity',
-                par1: '',
-                min1: 1,
-                max1: 1,
-                prop2: 'dmg-min',
-                par2: '',
-                min2: 8,
-                max2: 8,
-                prop3: 'att%',
-                par3: '',
-                min3: 15,
-                max3: 15,
-                prop4: 'mana-kill',
-                par4: '',
-                min4: 4,
-                max4: 4,
-                prop5: 'dmg%',
-                par5: '',
-                min5: 60,
-                max5: 70,
-                prop1Str: '击中使目标失明',
-                prop2Str: '+8 最小傷害 [8-8]',
-                prop3Str: '+15% 攻击命中率 [15-15]',
-                prop4Str: '击杀后恢复法力 +4 [4-4]',
-                prop5Str: '+70% 傷害强化 [60-70]',
-                prop6Str: '',
-                prop7Str: '',
-                prop8Str: '',
-                prop9Str: '',
-                prop10Str: '',
-                prop11Str: '',
-                prop12Str: '',
-        });
-        const uniqueItems = ref([
-            {
-                xId: 1,
-                index: 'Deathspade',
-                indexZh: '死亡之鏟',
-                enabledStr: '生效中',
-                rarity: '1',
-                lvl: 12,
-                lvlReq: 9,
-                codeStr: '斧',
-                enabled: 1,
-                version: 0,
-                firstladderseason: '',
-                lastladderseason: '',
-                nolimit: '',
-                code: 'axe',
-                itemName: 'Axe',
-                carry1: '',
-                costMult: 5,
-                costAdd: 5000,
-                chrTransform: 'dgld',
-                invTransform: '',
-                flippyFile: '',
-                invfile: 'invaxeu',
-                dropsound: '',
-                dropsfxframe: '',
-                usesound: '',
-                prop1: 'stupidity',
-                par1: '',
-                min1: 1,
-                max1: 1,
-                prop2: 'dmg-min',
-                par2: '',
-                min2: 8,
-                max2: 8,
-                prop3: 'att%',
-                par3: '',
-                min3: 15,
-                max3: 15,
-                prop4: 'mana-kill',
-                par4: '',
-                min4: 4,
-                max4: 4,
-                prop5: 'dmg%',
-                par5: '',
-                min5: 60,
-                max5: 70,
-                prop1Str: '击中使目标失明',
-                prop2Str: '+8 最小傷害 [8-8]',
-                prop3Str: '+15% 攻击命中率 [15-15]',
-                prop4Str: '击杀后恢复法力 +4 [4-4]',
-                prop5Str: '+70% 傷害强化 [60-70]',
-                prop6Str: '',
-                prop7Str: '',
-                prop8Str: '',
-                prop9Str: '',
-                prop10Str: '',
-                prop11Str: '',
-                prop12Str: '',
-
-            },
-            {
-                xId: 2,
-                index: 'Bladebone',
-                indexZh: '肩胛骨',
-                enabledStr: '生效中',
-                rarity: '1',
-                lvl: 20,
-                lvlReq: 15,
-                codeStr: '雙刃斧',
-                enabled: 1,
-                version: 0,
-                firstladderseason: '',
-                lastladderseason: '',
-                nolimit: '',
-                code: '2axe',
-                itemName: 'Double Axe',
-                carry1: '',
-                costMult: 5,
-                costAdd: 5000,
-                chrTransform: 'dpnk',
-                invTransform: '',
-                flippyFile: '',
-                invfile: 'inv2axeu',
-                dropsound: '',
-                dropsfxframe: '',
-                usesound: '',
-                prop1: 'dmg-max',
-                par1: '',
-                min1: 12,
-                max1: 15,
-                prop2: 'att%',
-                par2: '',
-                min2: 10,
-                max2: 10,
-                prop3: 'lifesteal',
-                par3: '',
-                min3: 5,
-                max3: 5,
-                prop4: 'dmg%',
-                par4: '',
-                min4: 50,
-                max4: 60,
-                prop1Str: '+15 最大傷害 [12-15]',
-                prop2Str: '+10% 攻击命中率 [10-10]',
-                prop3Str: '生命偷取 +5% [5-5]',
-                prop4Str: '+50% 傷害强化 [50-60]',
-                prop5Str: '+70% 傷害强化 [60-70]',
-                prop6Str: '',
-                prop7Str: '',
-                prop8Str: '',
-                prop9Str: '',
-                prop10Str: '',
-                prop11Str: '',
-                prop12Str: '',
-            },
-            {
-                xId: 3,
-                index: 'Rakescar',
-                indexZh: '猛刺',
-                enabledStr: '生效中',
-                rarity: '1',
-                lvl: 25,
-                lvlReq: 20,
-                codeStr: '戰斧',
-                enabled: 1,
-                version: 0,
-                firstladderseason: '',
-                lastladderseason: '',
-                nolimit: '',
-                code: 'axe',
-                itemName: 'Battle Axe',
-                carry1: '',
-                costMult: 6,
-                costAdd: 7000,
-                chrTransform: 'dgld',
-                invTransform: '',
-                flippyFile: '',
-                invfile: 'invaxeu',
-                dropsound: '',
-                dropsfxframe: '',
-                usesound: '',
-                prop1: 'dmg-min',
-                par1: '',
-                min1: 10,
-                max1: 10,
-                prop2: 'dmg-max',
-                par2: '',
-                min2: 30,
-                max2: 40,
-                prop3: 'dmg%',
-                par3: '',
-                min3: 75,
-                max3: 85,
-                prop1Str: '+10 最小傷害 [10-10]',
-                prop2Str: '+40 最大傷害 [30-40]',
-                prop3Str: '+85% 傷害强化 [75-85]',
-                prop4Str: '生命偷取 +5% [5-5]',
-                prop5Str: '+70% 傷害强化 [60-70]',
-                prop6Str: '',
-                prop7Str: '',
-                prop8Str: '',
-                prop9Str: '',
-                prop10Str: '',
-                prop11Str: '',
-                prop12Str: '',
-            }
-        ]);
+        const uniqueItems = ref([]);
         const detailDialogVisible = ref(false);
         const editDialogVisible = ref(false);
-        const selectedItem = reactive<xuniqueItem>({});
+        const selectedItem = reactive({});
         const editTitle = ref('编辑');
 
-        
         onMounted(() => {
             handleSearch(); // 页面加载时自动调用查询函数
         });
 
-        const handleSearch = async() => {
-            console.log("查询");
-            // 这里可以调用查询函数
+        const handleSearch = async () => {
             try {
                 const response = await apiUniqueQuery({
                     keyword: searchKeyword.value,
                     page: currentPage.value,
-                    pageSize: pageSize.value
+                    pageSize: pageSize.value,
                 });
-                console.log('Response:', response);
                 uniqueItems.value = response.items || [];
                 totalItems.value = response.total || 0;
-            }catch (error) {
-                console.error('Error fetching data:', error);
+            } catch (error) {
                 ElMessage.error('获取数据失败');
             }
-            
         };
 
         const addItem = () => {
             editTitle.value = '新增';
-            selectedItem.xId = undefined; // 清空选中项
+            Object.assign(selectedItem, {}); // 清空选中项
             editDialogVisible.value = true;
         };
 
@@ -350,18 +134,17 @@ export default defineComponent({
 
         const handlePageChange = (page) => {
             currentPage.value = page;
-            // 这里可以触发获取当前页数据的逻辑
-            handleSearch()
+            handleSearch();
         };
 
-        const handleRowDblClick = (row:xuniqueItem) => {
-            selectedItem.value = row;
-            detailDialogVisible.value = true;
+        const handleRowDblClick = (row) => {
+            Object.assign(selectedItem, row); // 将双击行的数据赋值给 selectedItem
+            detailDialogVisible.value = true; // 打开详情弹窗
         };
 
         const editItem = (item) => {
-            selectedItem.value = item;
-            editTitle.value = `编辑 - ${item.zhName}`;
+            Object.assign(selectedItem, item);
+            editTitle.value = `编辑 - ${item.indexZh}`;
             editDialogVisible.value = true;
         };
 
@@ -371,8 +154,8 @@ export default defineComponent({
                 cancelButtonText: '取消',
                 type: 'warning',
             }).then(() => {
-                ElMessage.success('删除成功');
                 // 执行删除逻辑
+                ElMessage.success('删除成功');
             }).catch(() => {
                 ElMessage.info('删除取消');
             });
@@ -381,7 +164,7 @@ export default defineComponent({
         const saveItem = (item) => {
             ElMessage.success('保存成功');
             editDialogVisible.value = false;
-            // 保存逻辑
+            handleSearch();
         };
 
         return {
@@ -389,8 +172,11 @@ export default defineComponent({
             currentPage,
             pageSize,
             totalItems,
-            xuniqueItem,
             uniqueItems,
+            detailDialogVisible,
+            editDialogVisible,
+            selectedItem,
+            editTitle,
             handleSearch,
             addItem,
             exportData,
@@ -398,30 +184,26 @@ export default defineComponent({
             handleRowDblClick,
             editItem,
             deleteItem,
-            detailDialogVisible,
-            editDialogVisible,
-            editTitle,
             saveItem,
-            selectedItem,
         };
     },
 });
 </script>
 
 <style scoped>
-.el-header {
-    padding: 10px;
-}
 
-.el-select {
-    width: 300px;
-}
 
-/* 表格列的动态宽度调整 */
-.el-table th,
-.el-table td {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+.blur-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2);
+    /* 半透明背景 */
+    backdrop-filter: blur(5px);
+    /* 虚化程度，可调节为 3px 或 10px */
+    z-index: 999;
+    /* 确保层级在页面顶部 */
 }
 </style>

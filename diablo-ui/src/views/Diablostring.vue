@@ -1,6 +1,6 @@
 <template>
   <el-container style="height: 100vh; width: 100%;">
-    <el-header>
+    <el-header style="background-color: white">
       <el-row :gutter="20">
         <el-col :span="6">
           <el-input v-model="searchKeyword" placeholder="请输入关键字搜索" clearable @keyup.enter.native="handleSearch"

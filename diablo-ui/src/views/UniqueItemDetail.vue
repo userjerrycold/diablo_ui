@@ -1,8 +1,8 @@
 <template>
     <div class="unique-item-detail">
-      <p class="item-name">{{ item.value.indexZh }} ({{ item.value.lvl }})</p>
-      <p class="item-en-name">{{ item.value.index }}</p>
-      <p class="item-level-req">等级要求：{{ item.value.lvlReq }}</p>
+      <p class="item-name">{{ item.indexZh }} ({{ item.lvl }})</p>
+      <p class="item-en-name">{{ item.index }}</p>
+      <p class="item-level-req">等级要求：{{ item.lvlReq }}</p>
       <div v-for="(prop, index) in properties" :key="index">
         <p class="item-property">{{ prop }}</p>
       </div>
@@ -20,7 +20,6 @@ export default {
   },
   mounted() {
     console.log('mounted', this.item);
-    console.log('computed', this.item.value.pro);
   },
   
   computed: {
@@ -28,18 +27,18 @@ export default {
     
     properties() {
       return [
-        this.item.value.prop1Str,
-        this.item.value.prop2Str,
-        this.item.value.prop3Str,
-        this.item.value.prop4Str,
-        this.item.value.prop5Str,
-        this.item.value.prop6Str,
-        this.item.value.prop7Str,
-        this.item.value.prop8Str,
-        this.item.value.prop9Str,
-        this.item.value.prop10Str,
-        this.item.value.prop11Str,
-        this.item.value.prop12Str
+        this.item.prop1Str,
+        this.item.prop2Str,
+        this.item.prop3Str,
+        this.item.prop4Str,
+        this.item.prop5Str,
+        this.item.prop6Str,
+        this.item.prop7Str,
+        this.item.prop8Str,
+        this.item.prop9Str,
+        this.item.prop10Str,
+        this.item.prop11Str,
+        this.item.prop12Str
       ].filter(prop => prop); // 过滤掉为空的属性
     }
   }

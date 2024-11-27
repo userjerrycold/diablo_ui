@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header>
+    <el-header style="background-color: white;">
       <el-input
           v-model="keyword"
           placeholder="请输入关键字搜索"

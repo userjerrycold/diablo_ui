@@ -1,71 +1,131 @@
 <template>
-    <div class="unique-item-detail">
-      <div class="item-name">
-        {{ item.indexZh }} (装备等级 {{ item.lvl }})
-      </div>
-      <div class="item-en-name">
-        {{ item.index }}
-      </div>
-      <div class="item-level-req">
-        等级要求：{{ item.lvlReq }}
-      </div>
-  
-      <div v-for="(property, index) in itemProperties" :key="index" class="item-property">
-        {{ property }}
+  <div class="unique-item-detail">
+    <div class="item-section">
+      <h3 class="section-title">基本属性</h3>
+      <div v-for="(value, key) in editableAttributes" :key="key" class="attribute-row">
+        <label class="attribute-key">{{ key }}:</label>
+        <el-input
+          v-model="editableAttributes[key]"
+          :placeholder="`请输入${key}`"
+          class="attribute-input"
+        />
       </div>
     </div>
-  </template>
-  
-  <script lang="ts">
-  import { defineComponent,PropType } from 'vue';
-  
-  export default defineComponent({
-    name: 'UniqueItemEdit',
-    props: {
-      item: {
-        type: Object as PropType<{
-          zhName: string;
-          enName: string;
-          equipLevel: number;
-          levelReq: number;
-          properties: string[];
-        }>,
-        required: true,
-      },
+    <div class="actions">
+      <el-button type="primary" @click="saveChanges">保存</el-button>
+      <el-button @click="cancelChanges">取消</el-button>
+      <el-button @click="previewItem">预览</el-button>
+    </div>
+    <!-- 预览弹窗 -->
+    <el-dialog v-model="previewVisible" title="预览" width="40%">
+      <div class="preview-content">
+        <p class="item-name">{{ editableAttributes.indexZh }}</p>
+        <p class="item-en-name">{{ editableAttributes.index }}</p>
+        <p class="item-level-req">等级要求：{{ editableAttributes.lvlReq }}</p>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, reactive, ref } from 'vue';
+import { ElMessage } from 'element-plus';
+
+export default defineComponent({
+  name: 'UniqueItemEdit',
+  props: {
+    item: {
+      type: Object,
+      required: true,
     },
-    computed: {
-      itemProperties() {
-        // 只取前 12 个属性
-        return this.item.properties.slice(0, 12);
-      },
-    },
-  });
-  </script>
-  
-  <style scoped>
-  .unique-item-detail {
-    font-family: 'KaiTi', serif;
-    color: white;
-    line-height: 1.5;
-  }
-  .item-name {
-    color: #61481f; /* 暗金色 */
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  .item-en-name {
-    color: #5a5858; /* 浅灰色 */
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  .item-level-req {
-    color: #FFFFFF; /* 白色 */
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-  .item-property {
-    color: #0a22f6; /* 蓝色 */
-    font-size: 20px;
-  }
-  </style>
+  },
+  setup(props, { emit }) {
+    const editableAttributes = reactive({ ...props.item.value });
+    const previewVisible = ref(false);
+
+    const saveChanges = () => {
+      emit('save', { ...editableAttributes });
+      ElMessage.success('保存成功！');
+    };
+
+    const cancelChanges = () => {
+      Object.assign(editableAttributes, props.item.value);
+      ElMessage.info('已取消更改');
+    };
+
+    const previewItem = () => {
+      previewVisible.value = true;
+    };
+
+    return { editableAttributes, saveChanges, cancelChanges, previewItem, previewVisible };
+  },
+});
+</script>
+
+<style scoped>
+.unique-item-detail {
+  font-family: 'KaiTi', serif;
+  color: white;
+  padding: 20px;
+}
+
+.item-section {
+  margin-top: 10px;
+}
+
+.section-title {
+  font-size: 20px;
+  color: #d4af37; /* 金色 */
+  margin-bottom: 10px;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+.attribute-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.attribute-key {
+  width: 150px;
+  color: #a8a8a8; /* 浅灰色 */
+  font-size: 16px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.attribute-input {
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.actions .el-button {
+  margin-left: 10px;
+}
+
+.preview-content {
+  text-align: center;
+}
+
+.preview-content .item-name {
+  color: #c5b176; /* 金色 */
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.preview-content .item-en-name {
+  color: #D3D3D3; /* 灰色 */
+  font-size: 20px;
+}
+
+.preview-content .item-level-req {
+  color: white;
+  font-size: 18px;
+}
+</style>
