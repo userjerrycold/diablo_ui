@@ -55,12 +55,13 @@
                 :modal="true"
                 v-model="editDialogVisible"
                 :style="{
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    backgroundColor: 'rgba(255, 255, 255, 1)',
                     borderRadius: '10px',
-                    boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)',
+                    boxShadow: '0 0 20px rgba(0, 0, 0, 0.7)',
                 }"
-                :append-to-body="true"
-                width="60%"
+                :close-on-click-modal="false"
+                @close="closeDialog"
+                width="90%"
             >
                 <UniqueItemEdit :item="selectedItem" @save="saveItem" />
             </el-dialog>
@@ -99,6 +100,7 @@ export default defineComponent({
             handleSearch(); // 页面加载时自动调用查询函数
         });
 
+        
         const handleSearch = async () => {
             try {
                 const response = await apiUniqueQuery({
@@ -111,6 +113,11 @@ export default defineComponent({
             } catch (error) {
                 ElMessage.error('获取数据失败');
             }
+        };
+
+        const closeDialog = () => {
+            //刷新reload
+            window.location.reload();
         };
 
         const addItem = () => {
@@ -177,6 +184,7 @@ export default defineComponent({
             editDialogVisible,
             selectedItem,
             editTitle,
+            closeDialog,
             handleSearch,
             addItem,
             exportData,
