@@ -61,7 +61,7 @@
                 }"
                 :close-on-click-modal="false"
                 @close="closeDialog"
-                width="90%"
+                width="85%"
             >
                 <UniqueItemEdit :item="selectedItem" @save="saveItem" />
             </el-dialog>

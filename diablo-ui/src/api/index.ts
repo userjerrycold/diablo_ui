@@ -3,7 +3,7 @@ import type { AxiosInstance } from 'axios';
 
 const instance: AxiosInstance = axios.create({
   baseURL: 'http://localhost:8095/quest', // 根据实际情况修改
-  timeout: 5000,
+  timeout: 10000,
 });
 
 // 请求拦截器

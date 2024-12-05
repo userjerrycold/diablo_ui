@@ -14,6 +14,10 @@ interface ApiResponse<T> {
   total: number;
 }
 
+interface IApiResponse<T> {
+  item: T;
+}
+
 // 定义Uniqueitem的数据格式
 interface Uniqueitem {
   id: number;
@@ -32,6 +36,7 @@ interface QueryParamX {
 }
 
 interface UniqueItemX {
+  id: number;
   xId: number;                     // 唯一标识符
   index: string;                   // 英文名称
   indexZh: string;                 // 中文名称
@@ -138,6 +143,37 @@ export const apiQuerySkill = async (
 };
 
 
+export async function apiPreview(params: any) {
+  try {
+    console.log("preview params: ", params)
+    const response = await axios.post('http://localhost:8095/quest/diablo/unique/preview', params);
+    console.log('response : ',response)
+    return {
+      code : response.data.code,
+      data: response.data.data,
+      message : response.data.message
+    }
+  } catch (error) {
+    console.error('Error apiPreview data:', error);
+    throw error;
+  }
+}
+
+export async function saveUnique(params: any) {
+  try {
+    console.log("saveUnique params: ", params)
+    const response = await axios.post('http://localhost:8095/quest/diablo/unique/save', params);
+    console.log('response : ',response)
+    return {
+      code : response.data.code,
+      data: response.data.data,
+      message : response.data.message
+    }
+  } catch (error) {
+    console.error('Error saveUnique data:', error);
+    throw error;
+  }
+}
 
 
 

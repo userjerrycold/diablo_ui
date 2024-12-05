@@ -2,7 +2,7 @@
   <div class="unique-item-detail">
     <!-- 其他字段 -->
     <div class="item-section">
-      <h3 class="section-title">其他字段</h3>
+      <h3 class="section-title">基础信息</h3>
       <hr class="section-divider" />
       <div class="attributes-container">
         <div
@@ -12,8 +12,7 @@
         >
           <label class="attribute-key">{{ key }}:</label>
           <el-input
-            v-model="editableAttributes[key]"
-            :placeholder="`请输入${key}`"
+            v-model="editAttributes[key]"
             class="attribute-input"
           />
         </div>
@@ -22,7 +21,7 @@
 
     <!-- 装备属性 -->
     <div class="item-section">
-      <h3 class="section-title">装备属性</h3>
+      <h3 class="section-title">属性信息</h3>
       <hr class="section-divider" />
       <div class="attributes-container">
         <div
@@ -32,8 +31,7 @@
         >
           <label class="attribute-key">{{ key }}:</label>
           <el-input
-            v-model="editableAttributes[key]"
-            :placeholder="`请输入${key}`"
+            v-model="editAttributes[key]"
             class="attribute-input"
           />
         </div>
@@ -65,6 +63,7 @@
 import { defineComponent, reactive, ref, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import UniqueItemDetail from './UniqueItemDetail.vue';
+import { apiPreview,saveUnique } from '../api/interface_plug';
 
 export default defineComponent({
   name: 'UniqueItemEdit',
@@ -78,9 +77,11 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    // 初始化字段
     const editableAttributes = reactive({ ...props.item });
     const previewVisible = ref(false);
     const editAttributes = reactive({
+      id:1,
       xId: 1,
       index: '',
       rarity: '1',
@@ -151,57 +152,92 @@ export default defineComponent({
       par12: '',
       min12: 1,
       max12: 1,
-                
     });
-    
 
-    // 过滤仅显示 prop1~prop12 和对应的 par/min/max 属性，隐藏 *str 属性
+    // 过滤仅显示 prop1~prop12 和对应的 par/min/max 属性
     const filteredAttributes = computed(() => {
-      const validKeys = [];
-      for (let i = 1; i <= 12; i++) {
-        validKeys.push(`prop${i}`, `par${i}`, `min${i}`, `max${i}`);
-      }
-      return Object.keys(editableAttributes)
+      const validKeys = Array.from({ length: 12 }, (_, i) => i + 1).flatMap((i) =>
+        [`prop${i}`, `par${i}`, `min${i}`, `max${i}`]
+      );
+      return Object.keys(editAttributes)
         .filter((key) => validKeys.includes(key))
         .reduce((result, key) => {
-          result[key] = editableAttributes[key];
+          result[key] = editAttributes[key];
           return result;
         }, {});
     });
 
-    // 显示其他字段，排除装备属性字段和隐藏 *str 属性
+    // 显示其他字段，排除装备属性字段
     const otherAttributes = computed(() => {
-      const excludedKeys = [];
-      for (let i = 1; i <= 12; i++) {
-        excludedKeys.push(`prop${i}`, `par${i}`, `min${i}`, `max${i}`, `par${i}str`);
-      }
-      return Object.keys(editableAttributes)
+      const excludedKeys = Array.from({ length: 12 }, (_, i) => i + 1).flatMap((i) =>
+        [`prop${i}`, `par${i}`, `min${i}`, `max${i}`, `id`]
+      );
+      return Object.keys(editAttributes)
         .filter((key) => !excludedKeys.includes(key))
         .reduce((result, key) => {
-          result[key] = editableAttributes[key];
+          result[key] = editAttributes[key];
           return result;
         }, {});
     });
 
-    const saveChanges = () => {
-      emit('save', { ...editableAttributes });
-      ElMessage.success('保存成功！');
+    // 同步字段
+    const syncAttributes = () => {
+      Object.keys(editAttributes).forEach((key) => {
+        if (key in editableAttributes) {
+          editAttributes[key] = editableAttributes[key];
+        }
+      });
     };
 
+    // 保存更改
+    const saveChanges = () => {
+      saveUnique(editAttributes).then((result)=>{
+        ElMessage.success('保存成功！');
+        if(result.code == 0){
+          //将结果赋值给editableAttributes，展示预览数据
+          Object.assign(editableAttributes, result.data);
+          console.log("editableAttributes: ",editableAttributes)
+        }else{
+          ElMessage.error('保存失败['+result.code+']')
+        }
+      }).catch(()=>{
+        ElMessage.error('保存失败')
+      })
+      
+    };
+
+    // 取消更改
     const cancelChanges = () => {
-      // 刷新页面
       window.location.reload();
     };
 
+    // 预览装备
     const previewItem = () => {
-      previewVisible.value = true;
+      console.log('editAttributes',editAttributes)
+      apiPreview(editAttributes).then((result)=>{
+        console.log('result: ',result)
+        if(result.code == 0){
+          previewVisible.value = true;
+          //将结果赋值给editableAttributes，展示预览数据
+          Object.assign(editableAttributes, result.data);
+        }else{
+          ElMessage.error('预览失败['+result.code+']')
+        }
+      }).catch(()=>{
+        ElMessage.error('预览失败')
+      })
+      
     };
+
+    // 初始化时同步字段
+    syncAttributes();
 
     return {
       editableAttributes,
       filteredAttributes,
       otherAttributes,
       editAttributes,
+      syncAttributes,
       saveChanges,
       cancelChanges,
       previewItem,
