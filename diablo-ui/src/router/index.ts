@@ -29,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Properties',
     component: () => import('@/views/Properties.vue'),
   },
+  {
+    path: '/color',
+    name: 'DiabloColor',
+    component: () => import('@/views/DiabloColor.vue'),
+  },
 ];
 
 const router = createRouter({

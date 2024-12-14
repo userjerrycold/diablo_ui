@@ -18,6 +18,7 @@
       <el-menu-item index="/unique">暗金装备</el-menu-item>
       <el-menu-item index="/skill">技能查询</el-menu-item>
       <el-menu-item index="/properties">属性列表</el-menu-item>
+      <el-menu-item index="/color">颜色代码</el-menu-item>
       <!-- 你可以在这里添加更多子菜单项 -->
     </el-sub-menu>
     <!-- 你可以在这里添加更多菜单项 -->
